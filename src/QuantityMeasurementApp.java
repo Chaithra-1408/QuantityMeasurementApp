@@ -2,7 +2,9 @@ public class QuantityMeasurementApp {
 
     enum LengthUnit {
         FEET(1.0),
-        INCH(1.0 / 12.0);
+        INCH(1.0 / 12.0),
+        YARD(3.0),
+        CENTIMETER(0.393701 / 12.0);
 
         private final double conversionFactor;
 
@@ -43,36 +45,43 @@ public class QuantityMeasurementApp {
 
         System.out.println("=== Quantity Measurement App ===");
 
-        QuantityLength oneFeet = new QuantityLength(
-                1.0, LengthUnit.FEET);
-        QuantityLength twelveInches = new QuantityLength(
-                12.0, LengthUnit.INCH);
-        QuantityLength twoFeet = new QuantityLength(
-                2.0, LengthUnit.FEET);
-        QuantityLength oneInch = new QuantityLength(
-                1.0, LengthUnit.INCH);
-        QuantityLength anotherOneInch = new QuantityLength(
-                1.0, LengthUnit.INCH);
+        QuantityLength oneYard = new QuantityLength(
+                1.0, LengthUnit.YARD);
+        QuantityLength threeFeet = new QuantityLength(
+                3.0, LengthUnit.FEET);
+        QuantityLength thirtySevenInches = new QuantityLength(
+                36.0, LengthUnit.INCH);
+        QuantityLength twoYards = new QuantityLength(
+                2.0, LengthUnit.YARD);
+        QuantityLength anotherTwoYards = new QuantityLength(
+                2.0, LengthUnit.YARD);
+        QuantityLength oneCm = new QuantityLength(
+                1.0, LengthUnit.CENTIMETER);
+        QuantityLength pointThreeInch = new QuantityLength(
+                0.393701, LengthUnit.INCH);
+        QuantityLength twoCm = new QuantityLength(
+                2.0, LengthUnit.CENTIMETER);
+        QuantityLength anotherTwoCm = new QuantityLength(
+                2.0, LengthUnit.CENTIMETER);
+
+        System.out.println("Input: 1.0 YARDS and 3.0 FEET");
+        System.out.println("Equal: " + oneYard.equals(threeFeet));
+
+        System.out.println("Input: 1.0 YARDS and 36.0 INCHES");
+        System.out.println(
+                "Equal: " + oneYard.equals(thirtySevenInches));
+
+        System.out.println("Input: 2.0 YARDS and 2.0 YARDS");
+        System.out.println("Equal: " + twoYards.equals(anotherTwoYards));
 
         System.out.println(
-                "Input: 1.0 feet and 12.0 inches");
-        System.out.println(
-                "Equal: " + oneFeet.equals(twelveInches));
+                "Input: 2.0 CENTIMETERS and 2.0 CENTIMETERS");
+        System.out.println("Equal: " + twoCm.equals(anotherTwoCm));
 
         System.out.println(
-                "Input: 1.0 feet and 2.0 feet");
+                "Input: 1.0 CENTIMETERS and 0.393701 INCHES");
         System.out.println(
-                "Equal: " + oneFeet.equals(twoFeet));
-
-        System.out.println(
-                "Input: 1.0 inch and 1.0 inch");
-        System.out.println(
-                "Equal: " + oneInch.equals(anotherOneInch));
-
-        System.out.println(
-                "Input: 12.0 inches and 1.0 feet");
-        System.out.println(
-                "Equal: " + twelveInches.equals(oneFeet));
+                "Equal: " + oneCm.equals(pointThreeInch));
 
         System.out.println("================================");
     }
