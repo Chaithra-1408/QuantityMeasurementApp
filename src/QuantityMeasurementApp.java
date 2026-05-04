@@ -30,6 +30,32 @@ public class QuantityMeasurementApp {
             return value * unit.getConversionFactor();
         }
 
+        public QuantityLength convertTo(LengthUnit targetUnit) {
+            if (targetUnit == null) {
+                throw new IllegalArgumentException(
+                        "Target unit cannot be null");
+            }
+            double baseValue = this.toBaseUnit();
+            double convertedValue =
+                    baseValue / targetUnit.getConversionFactor();
+            return new QuantityLength(convertedValue, targetUnit);
+        }
+
+        public static double convert(double value,
+                                     LengthUnit sourceUnit, LengthUnit targetUnit) {
+            if (sourceUnit == null || targetUnit == null) {
+                throw new IllegalArgumentException(
+                        "Units cannot be null");
+            }
+            if (!Double.isFinite(value)) {
+                throw new IllegalArgumentException(
+                        "Value must be a finite number");
+            }
+            double baseValue =
+                    value * sourceUnit.getConversionFactor();
+            return baseValue / targetUnit.getConversionFactor();
+        }
+
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
@@ -39,49 +65,75 @@ public class QuantityMeasurementApp {
             return Double.compare(
                     this.toBaseUnit(), other.toBaseUnit()) == 0;
         }
+
+        @Override
+        public String toString() {
+            return value + " " + unit.name();
+        }
+    }
+
+    static void demonstrateLengthConversion(double value,
+                                            LengthUnit fromUnit, LengthUnit toUnit) {
+        double result = QuantityLength.convert(
+                value, fromUnit, toUnit);
+        System.out.printf("convert(%.1f, %s, %s) = %.4f%n",
+                value, fromUnit, toUnit, result);
+    }
+
+    static void demonstrateLengthConversion(
+            QuantityLength length, LengthUnit toUnit) {
+        QuantityLength converted = length.convertTo(toUnit);
+        System.out.printf("convert(%s, %s) = %s%n",
+                length, toUnit, converted);
+    }
+
+    static void demonstrateLengthEquality(
+            QuantityLength length1, QuantityLength length2) {
+        System.out.printf("Equal(%s, %s) = %b%n",
+                length1, length2, length1.equals(length2));
     }
 
     public static void main(String[] args) {
 
         System.out.println("=== Quantity Measurement App ===");
+        System.out.println("\n--- UC5: Unit Conversion ---");
 
-        QuantityLength oneYard = new QuantityLength(
-                1.0, LengthUnit.YARD);
-        QuantityLength threeFeet = new QuantityLength(
-                3.0, LengthUnit.FEET);
-        QuantityLength thirtySevenInches = new QuantityLength(
-                36.0, LengthUnit.INCH);
-        QuantityLength twoYards = new QuantityLength(
-                2.0, LengthUnit.YARD);
-        QuantityLength anotherTwoYards = new QuantityLength(
-                2.0, LengthUnit.YARD);
-        QuantityLength oneCm = new QuantityLength(
-                1.0, LengthUnit.CENTIMETER);
-        QuantityLength pointThreeInch = new QuantityLength(
-                0.393701, LengthUnit.INCH);
-        QuantityLength twoCm = new QuantityLength(
-                2.0, LengthUnit.CENTIMETER);
-        QuantityLength anotherTwoCm = new QuantityLength(
-                2.0, LengthUnit.CENTIMETER);
+        demonstrateLengthConversion(1.0,
+                LengthUnit.FEET, LengthUnit.INCH);
 
-        System.out.println("Input: 1.0 YARDS and 3.0 FEET");
-        System.out.println("Equal: " + oneYard.equals(threeFeet));
+        demonstrateLengthConversion(3.0,
+                LengthUnit.YARD, LengthUnit.FEET);
 
-        System.out.println("Input: 1.0 YARDS and 36.0 INCHES");
-        System.out.println(
-                "Equal: " + oneYard.equals(thirtySevenInches));
+        demonstrateLengthConversion(36.0,
+                LengthUnit.INCH, LengthUnit.YARD);
 
-        System.out.println("Input: 2.0 YARDS and 2.0 YARDS");
-        System.out.println("Equal: " + twoYards.equals(anotherTwoYards));
+        demonstrateLengthConversion(1.0,
+                LengthUnit.CENTIMETER, LengthUnit.INCH);
 
-        System.out.println(
-                "Input: 2.0 CENTIMETERS and 2.0 CENTIMETERS");
-        System.out.println("Equal: " + twoCm.equals(anotherTwoCm));
+        demonstrateLengthConversion(0.0,
+                LengthUnit.FEET, LengthUnit.INCH);
 
-        System.out.println(
-                "Input: 1.0 CENTIMETERS and 0.393701 INCHES");
-        System.out.println(
-                "Equal: " + oneCm.equals(pointThreeInch));
+        demonstrateLengthConversion(6.0,
+                LengthUnit.FEET, LengthUnit.YARD);
+
+        demonstrateLengthConversion(24.0,
+                LengthUnit.INCH, LengthUnit.FEET);
+
+        System.out.println("\n--- Method Overloading Demo ---");
+
+        QuantityLength lengthInYards =
+                new QuantityLength(1.0, LengthUnit.YARD);
+        demonstrateLengthConversion(lengthInYards, LengthUnit.INCH);
+
+        System.out.println("\n--- Equality Checks ---");
+
+        demonstrateLengthEquality(
+                new QuantityLength(1.0, LengthUnit.FEET),
+                new QuantityLength(12.0, LengthUnit.INCH));
+
+        demonstrateLengthEquality(
+                new QuantityLength(1.0, LengthUnit.YARD),
+                new QuantityLength(3.0, LengthUnit.FEET));
 
         System.out.println("================================");
     }
