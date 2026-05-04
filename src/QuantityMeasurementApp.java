@@ -64,30 +64,34 @@ public class QuantityMeasurementApp {
             return baseValue / targetUnit.getConversionFactor();
         }
 
-        public static QuantityLength add(
-                QuantityLength length1,
-                QuantityLength length2) {
-            if (length1 == null || length2 == null) {
+        private static QuantityLength addInBaseUnit(
+                QuantityLength l1, QuantityLength l2,
+                LengthUnit targetUnit) {
+            if (l1 == null || l2 == null) {
                 throw new IllegalArgumentException(
                         "Lengths cannot be null");
             }
-            double baseSum = length1.toBaseUnit()
-                    + length2.toBaseUnit();
-            double resultValue = baseSum
-                    / length1.unit.getConversionFactor();
-            return new QuantityLength(resultValue, length1.unit);
+            if (targetUnit == null) {
+                throw new IllegalArgumentException(
+                        "Target unit cannot be null");
+            }
+            double baseSum = l1.toBaseUnit() + l2.toBaseUnit();
+            double result =
+                    baseSum / targetUnit.getConversionFactor();
+            double rounded =
+                    Math.round(result * 100.0) / 100.0;
+            return new QuantityLength(rounded, targetUnit);
         }
 
         public static QuantityLength add(
-                double value1, LengthUnit unit1,
-                double value2, LengthUnit unit2,
+                QuantityLength l1, QuantityLength l2) {
+            return addInBaseUnit(l1, l2, l1.unit);
+        }
+
+        public static QuantityLength add(
+                QuantityLength l1, QuantityLength l2,
                 LengthUnit targetUnit) {
-            QuantityLength l1 = new QuantityLength(value1, unit1);
-            QuantityLength l2 = new QuantityLength(value2, unit2);
-            double baseSum = l1.toBaseUnit() + l2.toBaseUnit();
-            double resultValue =
-                    baseSum / targetUnit.getConversionFactor();
-            return new QuantityLength(resultValue, targetUnit);
+            return addInBaseUnit(l1, l2, targetUnit);
         }
 
         @Override
@@ -108,48 +112,59 @@ public class QuantityMeasurementApp {
     }
 
     static void demonstrateAddition(
-            QuantityLength l1, QuantityLength l2) {
-        QuantityLength result = QuantityLength.add(l1, l2);
+            QuantityLength l1, QuantityLength l2,
+            LengthUnit targetUnit) {
+        QuantityLength result =
+                QuantityLength.add(l1, l2, targetUnit);
         System.out.println("add(" + l1 + ", " + l2
-                + ") = " + result);
+                + ", " + targetUnit + ") = " + result);
     }
 
     public static void main(String[] args) {
 
         System.out.println("=== Quantity Measurement App ===");
-        System.out.println("\n--- UC6: Addition of Two Lengths ---");
+        System.out.println(
+                "\n--- UC7: Addition with Target Unit ---");
 
         demonstrateAddition(
                 new QuantityLength(1.0, LengthUnit.FEET),
-                new QuantityLength(2.0, LengthUnit.FEET));
-
-        demonstrateAddition(
-                new QuantityLength(1.0, LengthUnit.FEET),
-                new QuantityLength(12.0, LengthUnit.INCH));
-
-        demonstrateAddition(
                 new QuantityLength(12.0, LengthUnit.INCH),
-                new QuantityLength(1.0, LengthUnit.FEET));
+                LengthUnit.FEET);
+
+        demonstrateAddition(
+                new QuantityLength(1.0, LengthUnit.FEET),
+                new QuantityLength(12.0, LengthUnit.INCH),
+                LengthUnit.INCH);
+
+        demonstrateAddition(
+                new QuantityLength(1.0, LengthUnit.FEET),
+                new QuantityLength(12.0, LengthUnit.INCH),
+                LengthUnit.YARD);
 
         demonstrateAddition(
                 new QuantityLength(1.0, LengthUnit.YARD),
-                new QuantityLength(3.0, LengthUnit.FEET));
+                new QuantityLength(3.0, LengthUnit.FEET),
+                LengthUnit.YARD);
 
         demonstrateAddition(
                 new QuantityLength(36.0, LengthUnit.INCH),
-                new QuantityLength(1.0, LengthUnit.YARD));
+                new QuantityLength(1.0, LengthUnit.YARD),
+                LengthUnit.FEET);
 
         demonstrateAddition(
                 new QuantityLength(2.54, LengthUnit.CENTIMETER),
-                new QuantityLength(1.0, LengthUnit.INCH));
+                new QuantityLength(1.0, LengthUnit.INCH),
+                LengthUnit.CENTIMETER);
 
         demonstrateAddition(
                 new QuantityLength(5.0, LengthUnit.FEET),
-                new QuantityLength(0.0, LengthUnit.INCH));
+                new QuantityLength(0.0, LengthUnit.INCH),
+                LengthUnit.YARD);
 
         demonstrateAddition(
                 new QuantityLength(5.0, LengthUnit.FEET),
-                new QuantityLength(-2.0, LengthUnit.FEET));
+                new QuantityLength(-2.0, LengthUnit.FEET),
+                LengthUnit.INCH);
 
         System.out.println("================================");
     }
